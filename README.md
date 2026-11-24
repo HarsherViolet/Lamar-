@@ -15,17 +15,22 @@ api/                    backend: Python serverless functions (Vercel needs this 
 tests/                  offline tests: python -m unittest discover -s tests -t .
 ```
 
-## Deploy (about 10 minutes, no Git needed)
+## Deploy
 
-1. **Get a free Gemini key.** Go to aistudio.google.com, sign in with Google, and choose **Get API key** → **Create API key**. No card is needed.
-2. **Deploy.** Go to **vercel.com/drop**, sign in (a free Hobby account), and unzip the download and drag the `lamar-vercel` folder onto the page. Name the project `lamar` and deploy.
-3. **Add the key.** In the Vercel project, go to **Settings → Environment Variables**. Add `GEMINI_API_KEY` with your key, and add `LAMAR_PASSCODE` with any word you'll remember. Without a passcode, anyone who finds your URL can use up your free AI quota.
-4. **Redeploy** so the settings take effect: **Deployments** → the latest one → **⋯** → **Redeploy**.
-5. **Install it.** Open your `https://lamar-xxxx.vercel.app` link.
-   - **Phone:** in Chrome on Android, use ⋮ → **Add to Home screen**. In Safari on iPhone, use Share → **Add to Home Screen**.
-   - **Laptop:** in Chrome, click the install icon in the address bar.
+Lamar deploys from GitHub. Every merge to `main` goes to production, and every pull request gets its own preview link.
 
-The first AI action asks for your passcode once.
+1. **Get a free Gemini key.** Go to aistudio.google.com and choose **Get API key** → **Create API key**. No card is needed.
+2. **Import the repo.** On vercel.com, choose **Add New → Project**, pick this repo, and keep the Framework Preset as **Other**. `vercel.json` sets everything else.
+3. **Add keys.** Under **Settings → Environment Variables**, add `GEMINI_API_KEY` and `LAMAR_PASSCODE` as **Secret**, ticking Production and Preview.
+4. **Deploy.** Merge to `main`. Keys added or changed later only reach the next deployment.
+5. **Install it.** Open the production link. Chrome shows an install icon in the address bar; on a phone, use **Add to Home screen**.
+
+Don't deploy with Vercel Drop. It uploads files as-is and skips building the `api/` functions, so `/api/roles` and `/api/ai` return 404.
+
+### Workflow
+
+- Branch from `main` (`feat/…`, `fix/…`, `docs/…`), open a pull request, and wait for the **Tests** check and the Vercel preview, then squash-merge.
+- Run tests locally with `python -m unittest discover -s tests -t .`. They're offline, so no keys are needed.
 
 ## Optional settings (Vercel → Settings → Environment Variables)
 
