@@ -310,7 +310,7 @@ Ad:
 ${text.slice(0,8000)}`,{modelTier:'quick'});
     if(!o||!o.title)throw{};const r=Object.assign({fn:'',posted:new Date().toISOString().slice(0,10),source:'your link'},o,{id:'mine-'+Date.now().toString(36),url:url||'#',mine:true,tags:Array.isArray(o.tags)?o.tags.slice(0,5).map(String):[]});
     if(!LEVELS.includes(r.level))r.level='Entry';S.custom.unshift(r);save();$('#aText').value='';$('#aUrl').value='';note.textContent='';switchTab('roles');openId=r.id;render();toast('Role added')}
-  catch(e){note.textContent=e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI could not read that ad. Try pasting more of it.'}
+  catch(e){note.textContent=e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI could not read that ad. '+((e&&e.message)||'Try pasting more of it.')}
   btn.disabled=false}
 
 /* ---------- CV and LinkedIn import ---------- */
@@ -409,7 +409,8 @@ ${bgText()}`,{modelTier:'default'});
     S.profile.facts=f;
     if(f.level&&!S.profile.levelSet){S.profile.level=f.level;$('#pLevel').value=f.level}
     BGW=null;save();renderProfile();render();toast('Profile ready. Check it over.')}
-  catch(e){box.innerHTML=`<div class="pf"><p class="hint">${e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI couldn\'t build your profile from that text.'}</p><button class="btn small" data-pf="build">Try again</button></div>`}
+  catch(e){const why=e&&e.message==='thin'?'No skills or experience were found in that text. Check the text reads properly.':e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':(e&&e.message)||'Unknown error.';
+    box.innerHTML=`<div class="pf"><p class="hint">The AI couldn\'t build your profile. ${esc(why)}</p><button class="btn small" data-pf="build">Try again</button></div>`}
   building=false}
 function renderProfile(){const f=S.profile.facts,box=$('#profileBox');
   if(!f){box.innerHTML=hasBg()?'<div class="pf"><button class="btn small hot" data-pf="build">Build my profile</button></div>':'<p class="hint" style="margin-top:12px">Upload your CV or LinkedIn PDF. Lamar turns it into a profile you can check, then uses it to match roles and write emails.</p>';return}
