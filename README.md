@@ -3,12 +3,12 @@
 Lamar is an installable web app (PWA) for finding startup roles in Kuala Lumpur and Singapore. It matches them to your CV and drafts outreach emails. Hosting is free on Vercel's Hobby plan, and the AI is free through Google Gemini's free tier, or through Ollama on your own computer.
 
 ```
-public/                 the app (installable PWA)
+frontend/               the app (installable PWA)
   index.html            the Lamar app
   ai-shim.js            AI settings (free cloud or Ollama) and backup/restore
   sw.js                 service worker: opens offline, keeps the last role list
   manifest.webmanifest  icons/
-api/
+api/                    backend: Python serverless functions (Vercel needs this folder name)
   roles.py              GET /api/roles: reads ~20 company job feeds live; cached 6 hours
   ai.py                 POST /api/ai: Gemini (free), then Groq (free), then OpenAI (paid, optional)
   _lamar/               the job pipeline and companies.json (the watch list)

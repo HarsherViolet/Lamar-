@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lamar job outreach</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#06222e">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lamar">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a calm, sharp work tool for a job seeker in KL and Singapore.
+   IDEA: a dispatch desk: each role is a letter waiting to be sent to a named hiring lead.
+   PICTURE: the live stack of role cards with fit meters is the picture, top of the page.
+   COLOUR and TYPE: ice ground, ink text, one hot pink accent; Space Grotesk titles, Inter body.
+   LAYOUT: brief column left, role stack right; stacks on phones as title, roles, brief. */
+:root{color-scheme:light dark;--bg:light-dark(#dff1f7,#06222e);--ink:light-dark(#06222e,#e4f3f8);--card:light-dark(#ffffff,#0c3242);--line:light-dark(#b9dbe6,#1d4a5c);--soft:light-dark(#4b6b78,#9cc2cf);--pink:#ff2e7e;--pinkink:light-dark(#c4004f,#ff6fa5);--field:light-dark(#f3fafc,#082a38)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;font-weight:600;margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:clamp(32px,5vw,46px)}h2{font-size:20px}h3{font-size:18px}
+.band{padding:clamp(20px,3vw,40px) max(4vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:end;justify-content:space-between}
+header p{margin:6px 0 0;color:var(--soft);max-width:60ch}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button,.btn{font:500 15px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+nav button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.hot{background:var(--pink);border-color:var(--pink);color:#fff}
+.btn.small{min-height:36px;padding:0 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:wait}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.brief{position:sticky;top:16px}
+label{display:block;font-weight:500;font-size:14px;margin:14px 0 6px}
+input[type=text],input[type=url],input[type=email],select,textarea{width:100%;font:16px Inter,sans-serif;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea{resize:vertical;min-height:110px;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips label{margin:0;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;min-height:40px;font-weight:500;cursor:pointer;background:var(--field)}
+.chips input{accent-color:var(--pink);width:16px;height:16px}
+.hint{font-size:13px;color:var(--soft);margin:6px 0 0}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.bar p{margin:0;color:var(--soft);font-size:14px}
+.stack{display:grid;gap:12px}
+.role{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(6,34,46,.5)}
+.role.open{border-color:var(--pink)}
+.rtop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+.co{font-size:14px;color:var(--soft);margin:0 0 2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--soft);margin-top:8px}
+.meta span{white-space:nowrap}
+.fit{text-align:right;min-width:74px}
+.fit b{font:600 26px "Space Grotesk",sans-serif;display:block;line-height:1}
+.fit small{font-size:13px;color:var(--soft)}
+.meter{height:6px;border-radius:6px;background:var(--line);margin-top:12px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--pink);border-radius:6px;transition:width .5s}
+.why{font-size:14px;margin:10px 0 0}
+.ract{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.ract select{width:auto;min-height:36px;padding:4px 10px;font-size:14px}
+.ract a{font-size:14px;color:var(--pinkink)}
+.draft{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+.draft textarea{min-height:220px;font-size:15px}
+.links{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;margin-top:10px}
+.links a{color:var(--pinkink)}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--pink);color:#fff}
+.notice{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--soft);font-weight:600}
+.due{color:var(--pinkink);font-weight:600}
+.empty{color:var(--soft);padding:24px 0;text-align:center}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+.scroll{overflow-x:auto}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.imp{display:flex;flex-wrap:wrap;gap:8px}.imp label.btn{display:inline-flex;align-items:center;margin:0}
+.imp input:focus-visible+label{outline:3px solid var(--pink);outline-offset:2px}
+.how{margin-top:10px;font-size:14px}.how summary{cursor:pointer;color:var(--pinkink);min-height:32px;display:flex;align-items:center}.how ol{padding-left:20px;margin:6px 0}
+.src{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;background:var(--field)}
+.src b{font-weight:600}.src .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.src .warn{color:var(--pinkink);margin:4px 0 0}.src textarea{min-height:140px;font-size:13px;margin-top:6px}
+.lnk{background:none;border:0;color:var(--pinkink);font:inherit;font-size:14px;cursor:pointer;padding:6px 0;min-height:32px}
+.pf{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}.pfh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pfl{margin:6px 0 0;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);background:var(--field);border-radius:999px;padding:2px 2px 2px 10px;font-size:13px}
+.chip button{border:0;background:none;color:var(--soft);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:50%}
+.pf .chips{gap:5px}.pf input{margin-top:8px}
+.win{display:grid;grid-template-columns:36px minmax(0,1fr) 32px;gap:4px;align-items:start;margin-top:6px}
+.win textarea{min-height:56px;font-size:14px;padding:6px 8px}
+.win button{border:0;background:none;cursor:pointer;font-size:18px;height:36px;color:var(--soft)}.star.on{color:var(--pink)}
+.xp{margin:0;padding-left:18px;font-size:14px}.xp li{margin:3px 0}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.brief{position:static;order:2}}
+@media(max-width:600px){table{font-size:13px}.stack2 thead{display:none}.stack2 tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack2 td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em}.stack2 td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--soft);font-size:12px}}
+@media(prefers-reduced-motion:reduce){.meter i{transition:none}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <div>
+    <h1>Lamar</h1>
+    <p>Startup roles in Kuala Lumpur and Singapore, read live from company job boards and matched to your CV, with a short note drafted to the person who hires.</p>
+  </div>
+  <nav role="tablist">
+    <button role="tab" id="t-roles" aria-selected="true" data-tab="roles">Roles</button>
+    <button role="tab" id="t-track" aria-selected="false" data-tab="track">Tracker <span id="trackCount"></span></button>
+    <button role="tab" id="t-add" aria-selected="false" data-tab="add">Add a role</button>
+  </nav>
+</div></header>
+
+<main class="band" style="padding-top:0"><div class="wrap">
+  <section id="v-roles" class="grid">
+    <aside class="panel brief" aria-label="Your brief">
+      <h2>Your brief</h2>
+      <label for="pName">Your name</label>
+      <input type="text" id="pName" autocomplete="name">
+      <label>Your background</label>
+      <div class="imp">
+        <label class="btn small" for="fCv">Upload CV</label><input class="sr" type="file" id="fCv" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp">
+        <label class="btn small" for="fLi">Upload LinkedIn PDF</label><input class="sr" type="file" id="fLi" accept=".pdf">
+      </div>
+      <p class="hint">PDF, Word, text, or a photo of your CV.</p>
+      <details class="how"><summary>How to get your LinkedIn PDF</summary>
+        <ol><li>Open your LinkedIn profile in a browser on a computer.</li><li>Click <b>Resources</b> (or <b>More</b>) under your name.</li><li>Choose <b>Save to PDF</b>.</li><li>Upload that file with the button above.</li></ol>
+        <p class="hint">The LinkedIn phone app doesn't have this option. LinkedIn can't be read from a profile link.</p></details>
+      <p class="hint" id="impNote" role="status"></p>
+      <div id="srcList"></div>
+      <details class="how" id="pasteBox"><summary>Or paste text</summary>
+        <textarea id="pCv" placeholder="Paste your CV or LinkedIn text"></textarea>
+        <button class="btn small" id="pasteUse" style="margin-top:8px">Use this text</button></details>
+      <div id="profileBox"></div>
+      <label for="pTarget">Roles you want</label>
+      <input type="text" id="pTarget">
+      <label>Where</label>
+      <div class="chips" id="pWhere">
+        <label><input type="checkbox" value="MY"> Malaysia</label>
+        <label><input type="checkbox" value="SG"> Singapore</label>
+        <label><input type="checkbox" value="Remote"> Remote OK</label>
+      </div>
+      <label for="pLevel">Your level</label>
+      <select id="pLevel"><option>Intern</option><option>Entry</option><option>Mid</option><option>Senior</option></select>
+      <label>Email tone</label>
+      <div class="chips" id="pTone">
+        <label><input type="radio" name="tone" value="Warm"> Warm</label>
+        <label><input type="radio" name="tone" value="Direct"> Direct</label>
+        <label><input type="radio" name="tone" value="Formal"> Formal</label>
+      </div>
+      <div id="aiSettings"></div>
+      <p class="hint" id="saveNote">Saved in this browser.</p>
+    </aside>
+
+    <div>
+      <div class="bar">
+        <p id="summary">Loading roles…</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="sort" aria-label="Sort roles" style="width:auto"><option value="fit">Best fit</option><option value="new">Newest</option></select>
+          <button class="btn hot" id="rankBtn">Rank with AI</button>
+        </div>
+      </div>
+      <div class="notice" id="aiNote" hidden></div>
+      <div class="stack" id="list"></div>
+      <p class="hint" style="margin-top:14px" id="freshNote">Roles are read from company job boards a few times a day. Open the posting before you send anything.</p>
+    </div>
+  </section>
+
+  <section id="v-track" hidden>
+    <div class="panel">
+      <div class="bar"><h2>Tracker</h2><p>Follow up 7 days after sending if you haven't heard back.</p></div>
+      <div id="trackBody"></div>
+    </div>
+  </section>
+
+  <section id="v-add" hidden>
+    <div class="panel" style="max-width:720px">
+      <h2>Add a role you found</h2>
+      <p class="hint">Paste any job ad from JobStreet, LinkedIn, MyCareersFuture, Hiredly or a careers page. AI pulls out the details and adds it to your list.</p>
+      <label for="aUrl">Link to the posting</label>
+      <input type="url" id="aUrl" placeholder="https://">
+      <label for="aText">Job ad text</label>
+      <textarea id="aText" style="min-height:200px"></textarea>
+      <div class="ract"><button class="btn hot" id="addBtn">Add to my roles</button><span class="hint" id="addNote"></span></div>
+    </div>
+  </section>
+</div></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>window.LAMAR_ROLES_URL='/api/roles'</script>
+<script src="/ai-shim.js"></script>
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LEVELS=['Intern','Entry','Mid','Senior','Lead'];
+const STATUSES=['','Saved','Emailed','Replied','Interview','Offer','Closed'];
+const defaults={profile:{name:'',cv:'',target:'data analyst, data scientist, analytics engineer, product analyst',where:['MY','SG'],level:'Entry',tone:'Warm',sources:{},facts:null},track:{},ai:{},drafts:{},custom:[]};
+let S=JSON.parse(JSON.stringify(defaults));
+let ROLES=[],openId=null,sample=null,store=null,saveTimer=null,saving=false,dirty=false;
+
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)};
+const allRoles=()=>[...S.custom,...ROLES];
+let META=null;
+const isNew=r=>{const d=daysAgo(r.first_seen);return d!=null&&d<=2};
+const daysAgo=d=>d?Math.max(0,Math.round((Date.now()-new Date(d+'T00:00:00'))/864e5)):null;
+
+/* ---------- persistence ---------- */
+function loadLocal(){try{const v=localStorage.getItem('lamar');if(v)S=Object.assign(JSON.parse(JSON.stringify(defaults)),JSON.parse(v))}catch(e){}}
+function save(){dirty=true;try{localStorage.setItem('lamar',JSON.stringify(S))}catch(e){}clearTimeout(saveTimer);saveTimer=setTimeout(flush,1200)}
+async function flush(){if(!store||saving||!dirty)return;saving=true;dirty=false;try{await store.set(JSON.parse(JSON.stringify(S)));$('#saveNote').textContent='Saved to your account. Only you can see it.'}catch(e){$('#saveNote').textContent='Saved in this browser only.'}saving=false;if(dirty)flush()}
+async function initStore(){try{const db=await claude.use('db'),user=await claude.use('user');if(!db||!user)return;const id=await user.id();if(!id)return;store=db.collection('data/users/'+id).doc('state');const snap=await store.get();if(snap.exists){S=Object.assign(JSON.parse(JSON.stringify(defaults)),snap.data());normalize();fillBrief();renderSources();renderProfile();render()}else{dirty=true;flush()}$('#saveNote').textContent='Saved to your account. Only you can see it.'}catch(e){}}
+
+/* ---------- brief ---------- */
+function fillBrief(){const p=S.profile;$('#pName').value=p.name;$('#pTarget').value=p.target;$('#pLevel').value=p.level;
+document.querySelectorAll('#pWhere input').forEach(i=>i.checked=p.where.includes(i.value));
+document.querySelectorAll('#pTone input').forEach(i=>i.checked=i.value===p.tone)}
+function readBrief(){const p=S.profile;p.name=$('#pName').value.trim();p.target=$('#pTarget').value;p.level=$('#pLevel').value;
+p.where=[...document.querySelectorAll('#pWhere input:checked')].map(i=>i.value);p.tone=(document.querySelector('#pTone input:checked')||{}).value||'Warm';save();render()}
+
+/* ---------- local fit score ---------- */
+const words=s=>(s||'').toLowerCase().match(/[a-z][a-z+#.]{1,}/g)||[];
+function localFit(r){const p=S.profile;const targets=p.target.toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);const title=r.title.toLowerCase();
+let s=30;if(targets.some(t=>title.includes(t)))s+=35;else if(targets.some(t=>t.split(' ').some(w=>w.length>3&&title.includes(w))))s+=18;
+const {sk,cv}=bgWords();if(cv.size||sk.size){const hit=(r.tags||[]).filter(t=>sk.has(t)||t.split(' ').every(w=>cv.has(w))).length;s+=Math.min(24,hit*8)}
+const gap=LEVELS.indexOf(r.level)-LEVELS.indexOf(p.level);s-=gap>0?gap*12:Math.abs(gap)*6;
+return Math.max(5,Math.min(98,Math.round(s)))}
+function visible(r){const w=S.profile.where;if(!w.length)return true;return w.includes(r.country)||(w.includes('Remote')&&r.mode==='Remote')}
+const fitOf=r=>S.ai[r.id]?S.ai[r.id].score:localFit(r);
+
+/* ---------- render roles ---------- */
+function render(){
+  const list=allRoles().filter(visible);const by=$('#sort').value;
+  list.sort(by==='new'?(a,b)=>(b.posted||'0').localeCompare(a.posted||'0'):(a,b)=>fitOf(b)-fitOf(a));
+  const ai=Object.keys(S.ai).length;
+  const fresh=list.filter(isNew).length;
+  $('#summary').textContent=`${list.length} roles in ${S.profile.where.filter(w=>w!=='Remote').join(' and ')||'all locations'}${fresh?` · ${fresh} new`:''} · ${ai?'ranked by AI':'quick keyword fit'}`;
+  if(META&&META.updated_at)$('#freshNote').textContent=`Roles collected from company job boards, last updated ${new Date(META.updated_at).toLocaleString([], {day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}. Open the posting before you send anything, in case it has closed.`;
+  $('#list').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No roles match these locations. Tick another box in your brief.</p>';
+  const n=Object.values(S.track).filter(t=>t.s).length;$('#trackCount').textContent=n?`(${n})`:'';
+  renderTrack()}
+function card(r){const f=fitOf(r),a=S.ai[r.id],t=S.track[r.id]||{},d=daysAgo(r.posted),open=openId===r.id;
+  return `<article class="role${open?' open':''}" data-id="${esc(r.id)}">
+  <div class="rtop"><div><p class="co">${esc(r.company)}${r.mine?' <span class="tag">Added by you</span>':isNew(r)?' <span class="tag">New</span>':''}</p><h3>${esc(r.title)}</h3>
+  <div class="meta"><span>${esc(r.city)}</span><span>${esc(r.mode)}</span><span>${esc(r.level)}</span>${r.salary?`<span>${esc(r.salary)}</span>`:''}${d!=null?`<span>Posted ${d===0?'today':d+' days ago'}</span>`:''}</div></div>
+  <div class="fit"><b>${f}</b><small>fit</small></div></div>
+  <div class="meter"><i style="width:${f}%"></i></div>
+  <p class="why">${esc(a?a.why:r.note)}</p>
+  <div class="ract"><button class="btn small${open?'':' hot'}" data-act="draft">${open?'Close':S.drafts[r.id]?'Open draft':'Draft email'}</button>
+  <select data-act="status" aria-label="Status for ${esc(r.title)}">${STATUSES.map(s=>`<option value="${s}"${t.s===s?' selected':''}>${s||'Not started'}</option>`).join('')}</select>
+  <a href="${esc(r.url)}" target="_blank" rel="noopener">Posting on ${esc(r.source||'site')}</a></div>
+  ${open?draftView(r):''}</article>`}
+function draftView(r){const d=S.drafts[r.id],t=S.track[r.id]||{};
+  const who=encodeURIComponent(`${(d&&d.contact)||r.contact} ${r.company.split(/[|(]/)[0].trim()}`);
+  if(!d)return `<div class="draft"><p class="hint">AI writes about 120 words to the ${esc(r.contact)}, using your CV and this role.</p><div class="ract"><button class="btn hot small" data-act="gen">Write the draft</button></div></div>`;
+  const gm=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(t.to||'')}&su=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(d.body)}`;
+  return `<div class="draft"><p class="hint">Send to: <b>${esc(d.contact||r.contact)}</b>. Find their name, then check their email before you send.</p>
+  <label for="to-${esc(r.id)}">Their email</label><input type="email" id="to-${esc(r.id)}" data-act="to" value="${esc(t.to||'')}" placeholder="name@company.com">
+  <label for="su-${esc(r.id)}">Subject</label><input type="text" id="su-${esc(r.id)}" data-act="su" value="${esc(d.subject)}">
+  <label for="bo-${esc(r.id)}">Email</label><textarea id="bo-${esc(r.id)}" data-act="bo">${esc(d.body)}</textarea>
+  <div class="ract"><button class="btn small" data-act="copy">Copy email</button><button class="btn small" data-act="gen">Rewrite</button><button class="btn hot small" data-act="sent">I've sent it</button></div>
+  <div class="links"><a href="https://www.linkedin.com/search/results/people/?keywords=${who}" target="_blank" rel="noopener">Find them on LinkedIn</a><a href="${esc(gm)}" target="_blank" rel="noopener">Open in Gmail</a></div></div>`}
+
+/* ---------- tracker ---------- */
+function keep(id){const r=allRoles().find(x=>x.id===id);if(r&&S.track[id])S.track[id].role={id:r.id,company:r.company,title:r.title,url:r.url}}
+function renderTrack(){const live=new Map(allRoles().map(r=>[r.id,r]));const rows=Object.entries(S.track).filter(([,t])=>t&&t.s).map(([id,t])=>live.get(id)||t.role).filter(Boolean);
+  if(!rows.length){$('#trackBody').innerHTML='<p class="empty">Nothing tracked yet. Set a status on a role, or press "I\'ve sent it" after emailing.</p>';return}
+  const today=new Date().toISOString().slice(0,10);
+  $('#trackBody').innerHTML=`<table class="stack2"><thead><tr><th>Company</th><th>Role</th><th>Status</th><th>Sent</th><th>Follow up</th></tr></thead><tbody>${rows.map(r=>{const t=S.track[r.id];
+  let fu='';if(t.s==='Emailed'&&t.d){const f=new Date(t.d+'T00:00:00');f.setDate(f.getDate()+7);const fs=f.toISOString().slice(0,10);fu=fs<=today?`<span class="due">Due ${fs}</span>`:fs}
+  return `<tr><td data-l="Company">${esc(r.company)}</td><td data-l="Role"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></td><td data-l="Status">${esc(t.s)}</td><td data-l="Sent">${esc(t.d||'')}</td><td data-l="Follow up">${fu}</td></tr>`}).join('')}</tbody></table>`}
+
+/* ---------- Claude ---------- */
+async function getSample(){if(sample)return sample;sample=await claude.use('sample');return sample}
+function aiErr(e){const c=e&&e.code;$('#aiNote').hidden=false;$('#aiNote').textContent=e&&e.message?e.message:c==='not_granted'?'AI isn\'t set up yet. Open AI settings in your brief.':c==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI could not finish that. Try again.'}
+async function rank(){const s=await getSample();if(!s){aiErr({code:'not_granted'});return}
+  if(!hasBg()){$('#aiNote').hidden=false;$('#aiNote').textContent='Upload your CV or LinkedIn PDF in the brief first, so the AI has something to match against.';return}
+  const btn=$('#rankBtn');btn.disabled=true;btn.textContent='Ranking…';
+  const roles=allRoles().filter(visible).map(r=>({id:r.id,company:r.company,title:r.title,city:r.city,level:r.level,note:r.note,tags:r.tags}));
+  try{const out=await s.json(`You are a careers adviser for Malaysia and Singapore. Score how well this candidate fits each role from 0 to 100, being realistic about seniority (a fresh graduate rarely fits a Senior or Lead role). For each, give one sentence under 25 words saying why, naming a concrete overlap or gap.
+Candidate level: ${S.profile.level}. Wants: ${S.profile.target}.
+${profileForPrompt()}
+
+Roles (JSON): ${JSON.stringify(roles)}
+
+Reply with JSON only: [{"id":"...","score":0,"why":"..."}] covering every role id.`,{modelTier:'default'});
+    const arr=Array.isArray(out)?out:(out&&out.roles)||[];S.ai={};arr.forEach(x=>{if(x&&x.id)S.ai[x.id]={score:Math.max(0,Math.min(100,Math.round(+x.score||0))),why:String(x.why||'')}});
+    $('#aiNote').hidden=true;$('#sort').value='fit';save();render();toast('Ranked')}catch(e){aiErr(e)}
+  btn.disabled=false;btn.textContent='Rank with AI'}
+async function draft(r,btn){const s=await getSample();if(!s){aiErr({code:'not_granted'});return}
+  if(!hasBg()){toast('Upload your CV in the brief first');return}
+  btn.disabled=true;btn.textContent='Writing…';
+  try{const out=await s.json(`Write a cold outreach email from a job seeker to the person who hires for this role. Market: ${r.country==='SG'?'Singapore':'Malaysia'}.
+Rules: about 110-130 words in the body. ${S.profile.tone} tone. Open with one specific line about the company or role, not flattery. Give two concrete proof points from the profile that match the role, preferring wins marked [lead with], with numbers kept exactly. Ask for a 15-minute chat, and say the formal application is in or will be. No buzzwords, no "I hope this finds you well", no em dashes. Sign off with the candidate's name: ${S.profile.name||'(name)'}. Never invent or stretch facts that are not in the profile.
+Role: ${r.title} at ${r.company} (${r.about}), ${r.city}, ${r.mode}. Notes: ${r.note}. Likely hiring lead: ${r.contact}.
+${profileForPrompt()}
+
+Reply with JSON only: {"subject":"under 9 words","body":"...","contact":"job title of the best person to email"}`,{modelTier:'default'});
+    if(!out||!out.body)throw{};S.drafts[r.id]={subject:String(out.subject||''),body:String(out.body),contact:String(out.contact||r.contact)};
+    if(!S.track[r.id]||!S.track[r.id].s)S.track[r.id]=Object.assign(S.track[r.id]||{},{s:'Saved'});keep(r.id);save();render()}catch(e){aiErr(e);btn.disabled=false;btn.textContent='Write the draft'}}
+async function addRole(){const s=await getSample(),text=$('#aText').value.trim(),url=$('#aUrl').value.trim();const note=$('#addNote');
+  if(!text){note.textContent='Paste the job ad text first.';return}if(!s){note.textContent='AI isn\'t set up yet. Open AI settings in your brief.';return}
+  const btn=$('#addBtn');btn.disabled=true;note.textContent='Reading the ad…';
+  try{const o=await s.json(`Extract this job ad into JSON only: {"company":"","about":"one line on the company","title":"","city":"","country":"MY or SG or other","mode":"On-site|Hybrid|Remote","level":"Intern|Entry|Mid|Senior|Lead","salary":"as written or empty","note":"one sentence on the key requirements","contact":"job title of the likely hiring manager","tags":["up to 5 lowercase skills"]}
+Ad:
+${text.slice(0,8000)}`,{modelTier:'quick'});
+    if(!o||!o.title)throw{};const r=Object.assign({fn:'',posted:new Date().toISOString().slice(0,10),source:'your link'},o,{id:'mine-'+Date.now().toString(36),url:url||'#',mine:true,tags:Array.isArray(o.tags)?o.tags.slice(0,5).map(String):[]});
+    if(!LEVELS.includes(r.level))r.level='Entry';S.custom.unshift(r);save();$('#aText').value='';$('#aUrl').value='';note.textContent='';switchTab('roles');openId=r.id;render();toast('Role added')}
+  catch(e){note.textContent=e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI could not read that ad. Try pasting more of it.'}
+  btn.disabled=false}
+
+/* ---------- CV and LinkedIn import ---------- */
+const MAMMOTH='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+const today=()=>new Date().toISOString().slice(0,10);
+const hasBg=()=>Object.keys(S.profile.sources||{}).length>0;
+const bgText=()=>Object.values(S.profile.sources||{}).map(s=>`[${s.kind==='linkedin'?'LinkedIn profile export':'CV'}: ${s.name}]\n${s.text}`).join('\n\n').slice(0,16000);
+let BGW=null;
+function bgWords(){const key=JSON.stringify([Object.values(S.profile.sources||{}).map(s=>s.chars),S.profile.facts&&S.profile.facts.skills]);
+  if(!BGW||BGW.key!==key)BGW={key,cv:new Set(words(bgText())),sk:new Set(((S.profile.facts&&S.profile.facts.skills)||[]).map(s=>String(s).toLowerCase()))};return BGW}
+function profileForPrompt(){const f=S.profile.facts;
+  if(!f)return 'Candidate CV text:\n'+bgText().slice(0,7000);
+  const wins=[...f.wins].filter(w=>w.text.trim()).sort((a,b)=>(b.star?1:0)-(a.star?1:0)).map(w=>(w.star?'[lead with] ':'')+w.text.trim());
+  return 'Candidate profile (JSON, checked by the candidate):\n'+JSON.stringify({headline:f.headline,years_experience:f.years,skills:f.skills,experience:f.experience,education:f.education,projects:f.projects,languages:f.languages,wins})}
+function normalize(){const p=S.profile;p.sources=p.sources||{};
+  if(p.cv&&p.cv.trim()&&!Object.keys(p.sources).length)p.sources.paste={kind:'cv',name:'Pasted text',text:p.cv,chars:p.cv.length,pages:0,method:'paste',at:today()};
+  p.cv='';if(p.facts)p.facts=cleanFacts(p.facts)}
+
+const libs={};
+function loadScript(src){return libs[src]||(libs[src]=new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>{delete libs[src];rej(new Error('load'))};document.head.appendChild(s)}))}
+async function pdfText(pdf){let out='';
+  for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent();let line='',y=null;
+    for(const it of c.items){const ny=it.transform[5];if(y!==null&&Math.abs(ny-y)>2){out+=line.trim()+'\n';line=''}line+=it.str+' ';y=ny}
+    out+=line.trim()+'\n\n'}
+  return out.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()}
+async function pdfImages(pdf){const out=[];
+  for(let i=1;i<=Math.min(pdf.numPages,4);i++){const pg=await pdf.getPage(i),vp=pg.getViewport({scale:1.6}),c=document.createElement('canvas');
+    c.width=vp.width;c.height=vp.height;await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;out.push(await new Promise(r=>c.toBlob(r,'image/png')))}
+  return out}
+async function ocr(blobs){const s=await getSample();if(!s)throw new Error('noai');
+  const lim=s.limits?await s.limits():{};if(!lim||!lim.images)throw new Error('noimg');
+  const r=await s('Transcribe all the text in these CV or LinkedIn profile images, in reading order, as plain text. Keep headings and bullet points. Output only the transcribed text.',{images:blobs,modelTier:'default'});
+  return String(r.text||'').trim()}
+async function readAny(f){const n=f.name.toLowerCase();
+  if(/\.(png|jpe?g|webp)$/.test(n))return{text:await ocr([f]),pages:1,method:'photo'};
+  if(n.endsWith('.pdf')){const lib=window.pdfjsLib;if(!lib)throw new Error('nopdf');
+    const pdf=await lib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;const text=await pdfText(pdf);
+    if(text.length>=150*pdf.numPages)return{text,pages:pdf.numPages,method:'text'};
+    try{return{text:await ocr(await pdfImages(pdf)),pages:pdf.numPages,method:'scan'}}catch(e){if(text.length>=80)return{text,pages:pdf.numPages,method:'text',weak:true};throw e}}
+  if(n.endsWith('.docx')){await loadScript(MAMMOTH);const r=await window.mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()});return{text:r.value.trim(),pages:0,method:'docx'}}
+  if(n.endsWith('.doc'))throw new Error('doc');
+  return{text:(await f.text()).trim(),pages:0,method:'text'}}
+function addSource(key,src){src.text=src.text.slice(0,20000);src.chars=src.text.length;src.at=today();S.profile.sources[key]=src;save();renderSources()}
+async function importFile(f,kind){const st=$('#impNote');st.textContent=`Reading ${f.name}…`;
+  try{const r=await readAny(f);if(!r.text||r.text.length<80)throw new Error('empty');
+    if(kind==='cv'&&/top skills/i.test(r.text)&&/linkedin\.com\/in\//i.test(r.text))kind='linkedin';
+    addSource(kind==='linkedin'?'linkedin':'cv',{kind,name:f.name,text:r.text,pages:r.pages,method:r.method,weak:!!r.weak});
+    st.textContent='';await buildProfile()}
+  catch(e){const m=e&&e.message;st.textContent=
+    m==='doc'?'Old .doc files can\'t be read here. Save it as .docx or PDF and upload again.':
+    m==='empty'?'Almost no text came out of that file. If it\'s a scan or photo, try a clearer one, or paste the text.':
+    m==='noimg'||m==='noai'?'That file is a scan or photo, and the AI engine you picked can\'t read images. Paste the text instead.':
+    m==='load'?'The Word reader didn\'t load. Check your connection, or save the file as PDF.':
+    'Couldn\'t read that file. Try a PDF, or paste the text.'}}
+
+const METHOD={text:'read as text',docx:'read from Word',scan:'scanned pages read by AI',photo:'photo read by AI',paste:'pasted'};
+function renderSources(){const src=S.profile.sources||{};
+  $('#srcList').innerHTML=Object.entries(src).map(([k,s])=>{const short=s.chars<600;
+    const stats=[s.pages?`${s.pages} page${s.pages>1?'s':''}`:'',`${s.chars.toLocaleString()} characters`,METHOD[s.method]||''].filter(Boolean).join(' · ');
+    return `<div class="src"><div class="row"><span><b>${s.kind==='linkedin'?'LinkedIn':'CV'}</b> · ${esc(s.name)}</span><button class="lnk" data-src="rm" data-k="${esc(k)}">Remove</button></div>
+    <div class="hint" style="margin:2px 0 0">${esc(stats)}${s.edited?' · edited':''}</div>
+    ${short||s.weak?`<p class="warn">${s.weak?'Some pages looked like images and may be missing.':'That\'s short for a CV.'} Check the text below came through properly.</p>`:''}
+    <button class="lnk" data-src="view" data-k="${esc(k)}">View or fix text</button>
+    <div class="srcText" hidden><textarea data-k="${esc(k)}" aria-label="Text read from ${esc(s.name)}">${esc(s.text)}</textarea><p class="hint">After fixing, press Rebuild on your profile.</p></div></div>`}).join('')}
+
+function cleanFacts(o){const arr=v=>Array.isArray(v)?v:[];const str=v=>v==null?'':String(v);
+  return{headline:str(o.headline),years:+o.years||0,level:LEVELS.includes(o.level)?o.level:'',
+    skills:[...new Set(arr(o.skills).map(s=>str(s).toLowerCase().trim()).filter(Boolean))].slice(0,30),
+    experience:arr(o.experience).map(x=>({role:str(x.role),org:str(x.org),start:str(x.start),end:str(x.end),points:arr(x.points).map(str).slice(0,3)})).slice(0,8),
+    education:arr(o.education).map(x=>({degree:str(x.degree),school:str(x.school),year:str(x.year)})).slice(0,5),
+    projects:arr(o.projects).map(x=>({name:str(x.name),points:arr(x.points).map(str).slice(0,2)})).slice(0,6),
+    languages:arr(o.languages).map(str).slice(0,6),
+    wins:arr(o.wins).map(w=>typeof w==='string'?{text:w,star:false}:{text:str(w.text),star:!!w.star}).filter(w=>w.text).slice(0,10)}}
+let building=false;
+async function buildProfile(){const box=$('#profileBox');if(building)return;
+  if(!hasBg()){S.profile.facts=null;save();renderProfile();return}
+  const s=await getSample();if(!s){box.innerHTML='<p class="hint">AI isn\'t set up yet, so Lamar will match on your raw text. Open AI settings below.</p>';return}
+  building=true;box.innerHTML='<div class="pf"><p class="hint">Building your profile from '+Object.keys(S.profile.sources).length+' source(s)…</p></div>';
+  try{const o=await s.json(`Turn this job seeker's CV and/or LinkedIn profile export into a structured profile. If there are two sources, merge them and remove duplicates; where they disagree, keep the more detailed version. Use only facts stated in the text. Never invent, inflate or reword numbers.
+Reply with JSON only:
+{"headline":"one plain line, e.g. Data science master's student with retail operations experience",
+"years":number of years of paid work experience (0 if none),
+"level":"Intern|Entry|Mid|Senior|Lead, the level they'd realistically be hired at",
+"skills":["up to 25 concrete skills and tools, lowercase, most job-relevant first"],
+"experience":[{"role":"","org":"","start":"","end":"","points":["up to 3 short bullets"]}],
+"education":[{"degree":"","school":"","year":""}],
+"projects":[{"name":"","points":["up to 2 short bullets"]}],
+"languages":[""],
+"wins":["up to 8 achievements worth mentioning to an employer, one sentence each, numbers kept exactly as written; best first"]}
+
+${bgText()}`,{modelTier:'default'});
+    const old=S.profile.facts,f=cleanFacts(o||{});
+    if(old){const starred=new Set(old.wins.filter(w=>w.star).map(w=>w.text));f.wins.forEach(w=>{if(starred.has(w.text))w.star=true})}
+    if(!f.wins.some(w=>w.star))f.wins.slice(0,2).forEach(w=>w.star=true);
+    if(!f.skills.length&&!f.experience.length)throw new Error('thin');
+    S.profile.facts=f;
+    if(f.level&&!S.profile.levelSet){S.profile.level=f.level;$('#pLevel').value=f.level}
+    BGW=null;save();renderProfile();render();toast('Profile ready. Check it over.')}
+  catch(e){box.innerHTML=`<div class="pf"><p class="hint">${e&&e.code==='rate_limited'?'The AI is busy. Try again in a minute.':'The AI couldn\'t build your profile from that text.'}</p><button class="btn small" data-pf="build">Try again</button></div>`}
+  building=false}
+function renderProfile(){const f=S.profile.facts,box=$('#profileBox');
+  if(!f){box.innerHTML=hasBg()?'<div class="pf"><button class="btn small hot" data-pf="build">Build my profile</button></div>':'<p class="hint" style="margin-top:12px">Upload your CV or LinkedIn PDF. Lamar turns it into a profile you can check, then uses it to match roles and write emails.</p>';return}
+  const li=(xs,fn)=>xs.length?xs.map(fn).join(''):'<li class="hint">None found</li>';
+  box.innerHTML=`<div class="pf"><div class="pfh"><h3>Your profile</h3><button class="btn small" data-pf="build">Rebuild</button></div>
+  ${f.headline?`<p class="pfl">${esc(f.headline)}</p>`:''}
+  <label>Skills <span class="hint">· used for matching</span></label>
+  <div class="chips">${f.skills.map((s,i)=>`<span class="chip">${esc(s)}<button aria-label="Remove ${esc(s)}" data-pf="rmskill" data-i="${i}">×</button></span>`).join('')}</div>
+  <input type="text" id="addSkill" placeholder="Add a skill and press Enter" aria-label="Add a skill">
+  <label>Wins for your emails</label><p class="hint" style="margin-top:0">Starred wins go first in drafts. Fix the wording, but keep them true.</p>
+  ${f.wins.map((w,i)=>`<div class="win"><button class="star${w.star?' on':''}" aria-pressed="${w.star}" aria-label="Lead with this win" data-pf="star" data-i="${i}">★</button><textarea data-pf="win" data-i="${i}" aria-label="Win ${i+1}">${esc(w.text)}</textarea><button aria-label="Remove this win" data-pf="rmwin" data-i="${i}">×</button></div>`).join('')}
+  <button class="lnk" data-pf="addwin">+ Add a win</button>
+  <label>Experience</label><ul class="xp">${li(f.experience,x=>`<li><b>${esc(x.role)}</b>${x.org?' · '+esc(x.org):''} <span class="hint">${esc([x.start,x.end].filter(Boolean).join('–'))}</span></li>`)}</ul>
+  <label>Education</label><ul class="xp">${li(f.education,x=>`<li>${esc(x.degree)}${x.school?' · '+esc(x.school):''} <span class="hint">${esc(x.year)}</span></li>`)}</ul>
+  ${f.languages.length?`<label>Languages</label><p style="margin:0;font-size:14px">${esc(f.languages.join(', '))}</p>`:''}
+  <p class="hint">Experience or education wrong? Fix the source text above, then Rebuild.</p></div>`}
+
+/* ---------- events ---------- */
+function switchTab(t){document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));['roles','track','add'].forEach(v=>$('#v-'+v).hidden=v!==t);try{history.replaceState(null,'',t==='roles'?location.pathname:'#'+t)}catch(e){}}
+document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)switchTab(b.dataset.tab)});
+['#pName','#pTarget'].forEach(s=>$(s).addEventListener('input',()=>{clearTimeout(readBrief.h);readBrief.h=setTimeout(readBrief,400)}));
+['#pLevel','#pWhere','#pTone'].forEach(s=>$(s).addEventListener('change',readBrief));
+$('#fCv').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f,'cv')});
+$('#fLi').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f,'linkedin')});
+$('#pasteUse').addEventListener('click',()=>{const t=$('#pCv').value.trim();if(t.length<80){$('#impNote').textContent='That is too short to be a CV. Paste the whole thing.';return}
+  addSource('paste',{kind:'cv',name:'Pasted text',text:t,pages:0,method:'paste'});$('#pCv').value='';$('#pasteBox').open=false;buildProfile()});
+$('#pLevel').addEventListener('change',()=>{S.profile.levelSet=true;save()});
+$('#srcList').addEventListener('click',e=>{const b=e.target.closest('[data-src]');if(!b)return;const k=b.dataset.k;
+  if(b.dataset.src==='rm'){delete S.profile.sources[k];BGW=null;save();renderSources();if(hasBg())buildProfile();else{S.profile.facts=null;save();renderProfile();render()}}
+  if(b.dataset.src==='view'){const d=b.closest('.src').querySelector('.srcText');d.hidden=!d.hidden;b.textContent=d.hidden?'View or fix text':'Hide text'}});
+$('#srcList').addEventListener('input',e=>{const t=e.target.closest('textarea[data-k]');if(!t)return;const s=S.profile.sources[t.dataset.k];if(s){s.text=t.value;s.chars=t.value.length;s.edited=true;BGW=null;save()}});
+$('#profileBox').addEventListener('click',e=>{const b=e.target.closest('[data-pf]');if(!b||b.tagName==='TEXTAREA')return;const f=S.profile.facts,i=+b.dataset.i,a=b.dataset.pf;
+  if(a==='build'){buildProfile();return}if(!f)return;
+  if(a==='rmskill')f.skills.splice(i,1);if(a==='rmwin')f.wins.splice(i,1);if(a==='star')f.wins[i].star=!f.wins[i].star;
+  if(a==='addwin'){f.wins.push({text:'',star:false});save();renderProfile();const ts=$('#profileBox').querySelectorAll('.win textarea');if(ts.length)ts[ts.length-1].focus();return}
+  BGW=null;save();renderProfile();render()});
+$('#profileBox').addEventListener('input',e=>{const t=e.target;if(t.dataset.pf==='win'&&S.profile.facts){S.profile.facts.wins[+t.dataset.i].text=t.value;save()}});
+$('#profileBox').addEventListener('keydown',e=>{if(e.target.id!=='addSkill'||e.key!=='Enter')return;e.preventDefault();const v=e.target.value.trim().toLowerCase();const f=S.profile.facts;
+  if(v&&f&&!f.skills.includes(v)){f.skills.push(v);BGW=null;save();renderProfile();render();$('#addSkill').focus()}});
+
+$('#sort').addEventListener('change',render);
+$('#rankBtn').addEventListener('click',rank);
+$('#addBtn').addEventListener('click',addRole);
+$('#list').addEventListener('click',async e=>{const el=e.target.closest('[data-act]');if(!el||el.tagName==='SELECT'||el.tagName==='INPUT'||el.tagName==='TEXTAREA')return;
+  const id=el.closest('.role').dataset.id,r=allRoles().find(x=>x.id===id),act=el.dataset.act;
+  if(act==='draft'){openId=openId===id?null:id;render();if(openId){const c=document.querySelector(`.role[data-id="${CSS.escape(id)}"]`);c&&c.scrollIntoView({block:'nearest'})}}
+  if(act==='gen')draft(r,el);
+  if(act==='copy'){const d=S.drafts[id];try{await navigator.clipboard.writeText(`Subject: ${d.subject}\n\n${d.body}`);toast('Copied')}catch(x){toast('Copy blocked here. Select the text and copy it.')}}
+  if(act==='sent'){S.track[id]=Object.assign(S.track[id]||{},{s:'Emailed',d:new Date().toISOString().slice(0,10)});keep(id);save();render();toast('Marked as sent. Follow-up in 7 days.')}});
+$('#list').addEventListener('change',e=>{const el=e.target;if(el.dataset.act!=='status')return;const id=el.closest('.role').dataset.id;
+  S.track[id]=Object.assign(S.track[id]||{},{s:el.value});if(el.value==='Emailed'&&!S.track[id].d)S.track[id].d=new Date().toISOString().slice(0,10);keep(id);save();render()});
+$('#list').addEventListener('input',e=>{const el=e.target,act=el.dataset.act;if(!['to','su','bo'].includes(act))return;const id=el.closest('.role').dataset.id;
+  if(act==='to')S.track[id]=Object.assign(S.track[id]||{},{to:el.value.trim()});else S.drafts[id][act==='su'?'subject':'body']=el.value;save()});
+
+/* ---------- start ---------- */
+loadLocal();normalize();fillBrief();renderSources();renderProfile();
+const h=location.hash.slice(1);if(h==='track'||h==='add')switchTab(h);
+fetch(window.LAMAR_ROLES_URL||'roles.json').then(r=>r.json()).then(d=>{ROLES=Array.isArray(d)?d:(d&&d.roles)||[];if(d&&d.meta&&d.meta.updated_at)META=d.meta;render()}).catch(()=>{$('#summary').textContent='Could not load the role list. Reload the page to try again.'});
+fetch('meta.json').then(r=>r.ok?r.json():null).then(m=>{if(m){META=m;render()}}).catch(()=>{});
+render();initStore();
+}
+</script>
+</body>
+</html>
