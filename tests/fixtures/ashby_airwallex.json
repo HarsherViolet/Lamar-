@@ -1,0 +1,46 @@
+{
+ "jobs": [
+  {
+   "id": "a1",
+   "title": "Senior Data Engineer, Data and AI, Customer Data Platform",
+   "location": "SG - Singapore",
+   "secondaryLocations": [],
+   "department": "Engineering",
+   "team": "Data Science",
+   "employmentType": "FullTime",
+   "isRemote": false,
+   "workplaceType": "OnSite",
+   "publishedAt": "2026-11-21T08:00:00.000+00:00",
+   "jobUrl": "https://jobs.ashbyhq.com/airwallex/a1",
+   "descriptionPlain": "Own the customer data platform using Spark, Kafka and dbt on AWS.",
+   "isListed": true,
+   "compensation": {
+    "compensationTierSummary": ""
+   }
+  },
+  {
+   "id": "a2",
+   "title": "Graduate Software Engineer",
+   "location": "Melbourne",
+   "secondaryLocations": [
+    {
+     "location": "Kuala Lumpur, Malaysia"
+    }
+   ],
+   "department": "Engineering",
+   "isRemote": false,
+   "publishedAt": "2026-11-22T08:00:00.000+00:00",
+   "jobUrl": "https://jobs.ashbyhq.com/airwallex/a2",
+   "descriptionPlain": "Graduate programme for new software engineers working in Java and TypeScript.",
+   "isListed": true
+  },
+  {
+   "id": "a3",
+   "title": "Hidden role",
+   "location": "Singapore",
+   "isListed": false,
+   "jobUrl": "https://x",
+   "publishedAt": "2026-11-22"
+  }
+ ]
+}

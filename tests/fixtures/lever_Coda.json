@@ -1,0 +1,46 @@
+[
+ {
+  "id": "1b745ccb",
+  "text": "Implementation Specialist (Mandarin/English)",
+  "categories": {
+   "location": "Kuala Lumpur, Malaysia",
+   "team": "Implementation",
+   "commitment": "Permanent",
+   "allLocations": [
+    "Kuala Lumpur, Malaysia"
+   ]
+  },
+  "workplaceType": "hybrid",
+  "createdAt": 1763337600000,
+  "hostedUrl": "https://jobs.lever.co/Coda/1b745ccb",
+  "descriptionPlain": "You will onboard B2B merchants across Asia and need fluent Mandarin and English."
+ },
+ {
+  "id": "aa11",
+  "text": "Senior Data Scientist",
+  "categories": {
+   "location": "Remote - APAC",
+   "team": "Data"
+  },
+  "workplaceType": "remote",
+  "createdAt": 1763337600000,
+  "hostedUrl": "https://jobs.lever.co/Coda/aa11",
+  "descriptionPlain": "Build machine learning models in Python for fraud detection across our payments network.",
+  "salaryRange": {
+   "currency": "SGD",
+   "min": 9000,
+   "max": 12000,
+   "interval": "per-month"
+  }
+ },
+ {
+  "id": "bb22",
+  "text": "Business Development Manager, China",
+  "categories": {
+   "location": "Shanghai, China"
+  },
+  "createdAt": 1763337600000,
+  "hostedUrl": "https://jobs.lever.co/Coda/bb22",
+  "descriptionPlain": "x"
+ }
+]
