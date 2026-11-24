@@ -16,7 +16,9 @@ async function viaServer(prompt,json,images){
   const d=await r.json().catch(()=>({error:'The AI service sent a bad reply.',code:'unavailable'}));
   if(r.status===401){const p=window.prompt('Enter your Lamar passcode');if(p){setCfg({...cfg(),passcode:p});return viaServer(prompt,json,images)}
     throw{code:'not_granted',message:'A passcode is needed to use AI here.'}}
-  if(!r.ok)throw{code:d.code||'unavailable',message:d.error};
+  if(!r.ok){const hint={bad_model:' Set GEMINI_MODEL in Vercel to the current Flash model name from AI Studio, then redeploy.',
+    bad_key:' Check GEMINI_API_KEY in Vercel, then redeploy.',not_configured:''}[d.code]||'';
+    throw{code:d.code||'unavailable',message:(d.error||'The AI service failed.')+hint}}
   return d.text}
 async function viaOllama(prompt,json,images){const c=cfg();
   const base=(c.ollamaUrl||'http://localhost:11434').replace(/\/+$/,'');
