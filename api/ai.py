@@ -15,11 +15,15 @@ Set LAMAR_PASSCODE to stop strangers who find the URL from using up your free qu
 """
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+# Used when the main model is overloaded (HTTP 503) or rate-limited. Set to "" to turn off.
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-flash-lite-latest")
+RETRY_WAIT = 1.5  # seconds before retrying an overloaded model
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 MAX_BODY = 12 * 1024 * 1024
 
@@ -39,22 +43,43 @@ def post_json(url, payload, headers, timeout=55):
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:300]
         code = "rate_limited" if e.code == 429 else "bad_key" if e.code in (401, 403) else \
-            "bad_model" if e.code == 404 else "provider_error"
+            "bad_model" if e.code == 404 else "overloaded" if e.code in (500, 503) else "provider_error"
         raise ProviderError(code, f"HTTP {e.code}: {detail}") from e
     except (urllib.error.URLError, TimeoutError) as e:
         raise ProviderError("unavailable", str(e)) from e
 
 
 def call_gemini(prompt, want_json, images):
+    """Main model, one retry if it's overloaded, then the lighter fallback model."""
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         raise ProviderError("not_configured", "GEMINI_API_KEY is not set")
+    err = None
+    for model, wait in ((GEMINI_MODEL, 0), (GEMINI_MODEL, RETRY_WAIT), (GEMINI_FALLBACK_MODEL, 0)):
+        if not model:
+            continue
+        if wait:
+            if err.code != "overloaded":
+                continue  # retrying the same model only helps when it's overloaded
+            time.sleep(wait)
+        try:
+            return gemini_once(key, model, prompt, want_json, images)
+        except ProviderError as e:
+            if e.code not in ("overloaded", "rate_limited"):
+                if err and model == GEMINI_FALLBACK_MODEL and e.code == "bad_model":
+                    break  # fallback alias unavailable: report the main model's problem
+                raise
+            err = e
+    raise err
+
+
+def gemini_once(key, model, prompt, want_json, images):
     parts = [{"text": prompt}] + [{"inline_data": {"mime_type": i.get("mime", "image/png"), "data": i["data"]}}
                                   for i in images]
     cfg = {"temperature": 0.4}
     if want_json:
         cfg["responseMimeType"] = "application/json"
-    out = post_json(f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent",
+    out = post_json(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
                     {"contents": [{"role": "user", "parts": parts}], "generationConfig": cfg},
                     {"x-goog-api-key": key})
     try:
@@ -126,6 +151,9 @@ def complete(prompt, want_json=False, images=()):
     name, e = configured[0]
     if any(err.code == "rate_limited" for _, err in configured):
         return {"error": "The free AI quota is used up for now. Try again later.", "code": "rate_limited"}
+    if any(err.code == "overloaded" for _, err in configured):
+        return {"error": "Google's free AI models are overloaded right now. Try again in a minute, "
+                         "or add a free GROQ_API_KEY in Vercel as a backup.", "code": "rate_limited"}
     return {"error": f"{name}: {e}", "code": e.code}
 
 

@@ -66,6 +66,45 @@ class AI(unittest.TestCase):
             r = ai.complete("x")
         self.assertEqual(r["code"], "rate_limited")
 
+    def test_gemini_overloaded_retries_then_uses_lite(self):
+        os.environ["GEMINI_API_KEY"] = "k"
+        seen = []
+        def fake(url, payload, headers, timeout=55):
+            seen.append(url.split("/models/")[1].split(":")[0])
+            if len(seen) < 3:
+                raise ai.ProviderError("overloaded", "HTTP 503")
+            return {"candidates": [{"content": {"parts": [{"text": "ok"}]}}]}
+        with mock.patch.object(ai, "post_json", side_effect=fake), mock.patch.object(ai.time, "sleep"):
+            r = ai.complete("x")
+        self.assertEqual(r["text"], "ok")
+        self.assertEqual(seen, ["gemini-flash-latest", "gemini-flash-latest", "gemini-flash-lite-latest"])
+
+    def test_overloaded_everywhere_gives_friendly_error(self):
+        os.environ["GEMINI_API_KEY"] = "k"
+        with mock.patch.object(ai, "post_json", side_effect=ai.ProviderError("overloaded", "503")), \
+                mock.patch.object(ai.time, "sleep"):
+            r = ai.complete("x")
+        self.assertEqual(r["code"], "rate_limited")
+        self.assertIn("overloaded", r["error"])
+
+    def test_rate_limit_skips_retry_and_uses_lite(self):
+        os.environ["GEMINI_API_KEY"] = "k"
+        seen = []
+        def fake(url, payload, headers, timeout=55):
+            seen.append(url.split("/models/")[1].split(":")[0])
+            if len(seen) == 1:
+                raise ai.ProviderError("rate_limited", "HTTP 429")
+            return {"candidates": [{"content": {"parts": [{"text": "ok"}]}}]}
+        with mock.patch.object(ai, "post_json", side_effect=fake), mock.patch.object(ai.time, "sleep") as sl:
+            r = ai.complete("x")
+        self.assertEqual((r["text"], seen, sl.call_count), ("ok", ["gemini-flash-latest", "gemini-flash-lite-latest"], 0))
+
+    def test_bad_model_is_not_retried(self):
+        os.environ["GEMINI_API_KEY"] = "k"
+        with mock.patch.object(ai, "post_json", side_effect=ai.ProviderError("bad_model", "404")) as pj:
+            r = ai.complete("x")
+        self.assertEqual((r["code"], pj.call_count), ("bad_model", 1))
+
     def test_openai_compatible(self):
         os.environ.update(OPENAI_API_KEY="o", OPENAI_MODEL="some-model", OPENAI_BASE_URL="https://example.com/v1/")
         with mock.patch.object(ai, "post_json", return_value={"choices": [{"message": {"content": "hello"}}]}) as pj:
