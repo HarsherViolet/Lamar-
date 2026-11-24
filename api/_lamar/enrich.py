@@ -56,23 +56,37 @@ def level(title: str) -> str:
     return "Mid"
 
 
-def function(title: str, department: str) -> str:
-    t = f"{title} {department}".lower()
-    rules = [
-        ("Product", r"product manager|product owner|\bpm\b"),
-        ("Data", r"\bdata\b|analytic|scientist|machine learning|\bml\b|\bai\b|\bbi\b"),
-        ("Business", r"strategy|business analyst|fp&a|consult"),
-        ("Data", r"analyst|insight"),
-        ("Design", r"design|\bux\b|\bui\b|research(er)?\b"),
-        ("Engineering", r"engineer|developer|devops|\bsre\b|architect|software|qa\b|security"),
-        ("Sales", r"sales|account (executive|manager)|business development|\bbd\b|partnership"),
-        ("Marketing", r"marketing|growth|brand|content|seo|community"),
-        ("Business", r"strategy|consult|finance|fp&a|business analyst|risk|legal|compliance"),
-    ]
-    for name, pat in rules:
+FUNCTION_RULES = [
+    ("Product", r"product manager|product owner|\bpm\b"),
+    ("Data", r"\bdata\b|analytic|scientist|machine learning|\bml\b|\bai\b|\bbi\b"),
+    ("Business", r"strategy|business analyst|fp&a|consult"),
+    ("Data", r"analyst|insight"),
+    ("Design", r"design|\bux\b|\bui\b|user research"),
+    ("Engineering", r"engineer|developer|devops|\bsre\b|architect|software|\bqa\b|security"),
+    ("Sales", r"sales|account (executive|manager)|business development|\bbd\b|partnership"),
+    ("Marketing", r"marketing|growth|brand|content|seo|community"),
+    ("Business", r"finance|controller|treasury|risk|legal|counsel|compliance"),
+]
+
+
+def _match(text: str) -> str | None:
+    t = text.lower()
+    for name, pat in FUNCTION_RULES:
         if re.search(pat, t):
             return name
-    return "Operations"
+    return None
+
+
+def function(title: str, department: str) -> str:
+    """Label by what the job is, not by its qualifiers.
+
+    The part of a title before any bracket, comma or dash says what the job is
+    ("Product Design Intern"); what follows qualifies it ("(Design Systems & AI
+    Workflows)", ", Data Platform"). Read the head first, then the full title,
+    then the department.
+    """
+    head = re.split(r"\s*[(\[,|]|\s[-–—]\s", title, maxsplit=1)[0]
+    return _match(head) or _match(title) or _match(department) or "Operations"
 
 
 def mode(workplace: str, locations: list[str], description: str) -> str:

@@ -53,5 +53,28 @@ class Roles(unittest.TestCase):
         self.assertEqual(dates, sorted(dates, reverse=True))
 
 
+
+class FunctionLabels(unittest.TestCase):
+    def test_title_head_decides(self):
+        from _lamar.enrich import function
+        cases = {
+            ("Product Design Intern (Design Systems & AI Workflows)_ Jan 2027", ""): "Design",
+            ("Senior Software Engineer, Data Platform", "Engineering"): "Engineering",
+            ("Lead Integration Engineer, Orchestration Team", ""): "Engineering",
+            ("Senior Data Scientist – Credit Risk", ""): "Data",
+            ("Data Analyst", ""): "Data",
+            ("Strategy Analyst", "Strategy"): "Business",
+            ("AI Product Manager", ""): "Product",
+            ("Research Scientist", ""): "Data",
+            ("Counsel, Product Legal", ""): "Business",
+            ("Senior Treasury Associate", ""): "Business",
+            ("Intern - Retail Network Management", "Retail"): "Operations",
+            ("Implementation Specialist", "Implementation"): "Operations",
+            ("Merchant Sales Executive, GrabMart & GrabPay", ""): "Sales",
+        }
+        for (title, dept), want in cases.items():
+            self.assertEqual(function(title, dept), want, title)
+
+
 if __name__ == "__main__":
     unittest.main()
