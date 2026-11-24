@@ -1,0 +1,38 @@
+{
+ "totalFound": 2,
+ "content": [
+  {
+   "id": "744000091288545",
+   "name": "Strategy Analyst",
+   "releasedDate": "2026-11-15T02:00:00.000Z",
+   "location": {
+    "city": "Kuala Lumpur",
+    "country": "my",
+    "remote": false
+   },
+   "department": {
+    "label": "Strategy"
+   },
+   "typeOfEmployment": {
+    "label": "Full-time"
+   },
+   "experienceLevel": {
+    "label": "Mid-Senior Level"
+   }
+  },
+  {
+   "id": "744000099999999",
+   "name": "Product Designer",
+   "releasedDate": "2026-11-19T02:00:00.000Z",
+   "location": {
+    "city": "Singapore",
+    "country": "sg",
+    "remote": false,
+    "hybrid": true
+   },
+   "department": {
+    "label": "Design"
+   }
+  }
+ ]
+}
