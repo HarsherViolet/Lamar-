@@ -8,7 +8,7 @@ import re
 MY_PLACES = ["kuala lumpur", "petaling jaya", "selangor", "cyberjaya", "putrajaya", "subang",
              "shah alam", "bangsar", "penang", "george town", "johor", "malacca", "melaka",
              "ipoh", "kuching", "kota kinabalu", "malaysia", "kl,", " kl "]
-SG_PLACES = ["singapore", "serangoon", " sg ", "sg -", "sg-", ", sg"]
+SG_PLACES = ["singapore", "singpaore", "serangoon", " sg ", "sg -", "sg-", ", sg"]
 REMOTE_APAC = ["apac", "apj", "asia", "southeast asia", "sea", "gmt+8", "utc+8"]
 
 CITY_NAMES = {"kuala lumpur": "Kuala Lumpur", "petaling jaya": "Petaling Jaya", "cyberjaya": "Cyberjaya",
@@ -22,7 +22,7 @@ SKILLS = ["sql", "python", "r", "excel", "tableau", "power bi", "looker", "dbt",
           "credit risk", "fraud", "etl", "data modelling", "pytorch", "tensorflow", "javascript",
           "typescript", "react", "java", "go", "kubernetes", "mandarin", "bahasa"]
 
-CONTACTS = {"Data": "Head of Data", "Engineering": "Engineering Manager", "Product": "Head of Product",
+CONTACTS = {"Education": "Head of Academics", "Data": "Head of Data", "Engineering": "Engineering Manager", "Product": "Head of Product",
             "Design": "Head of Design", "Sales": "Head of Sales", "Marketing": "Head of Marketing",
             "Business": "Head of Strategy", "Operations": "Head of Operations"}
 
@@ -57,6 +57,8 @@ def level(title: str) -> str:
 
 
 FUNCTION_RULES = [
+    ("Education", r"teacher|tutor|lecturer|instructor|educator|teaching|tuition|curriculum|montessori"
+                  r"|preschool|kindergarten|academic coach|learning support|homeroom"),
     ("Product", r"product manager|product owner|\bpm\b"),
     ("Data", r"\bdata\b|analytic|scientist|machine learning|\bml\b|\bai\b|\bbi\b"),
     ("Business", r"strategy|business analyst|fp&a|consult"),
@@ -139,14 +141,14 @@ def role_id(company: str, source_id: str, title: str) -> str:
     return f"{slug}-{h}"
 
 
-# Frontline logistics and retail roles crowd out the office roles Lamar is for.
-EXCLUDE = re.compile(r"\b(driver|rider|lorry|truck|delivery (staff|attendant)|fleet assistant|warehouse assistant"
+# Frontline logistics and retail roles. Kept, but flagged so the app can hide them by default.
+FRONTLINE = re.compile(r"\b(driver|rider|lorry|truck|delivery (staff|attendant)|fleet assistant|warehouse assistant"
                      r"|operator|sales assistant|retail assistant|cashier|cleaner|technician)\b", re.I)
 
 
 def to_role(job: dict, company: dict) -> dict | None:
     where = market(job["locations"], job["workplace"], job["title"])
-    if not where or not job["title"] or not job["url"] or EXCLUDE.search(job["title"]):
+    if not where or not job["title"] or not job["url"]:
         return None
     country, city = where
     fn = function(job["title"], job["department"])
@@ -168,4 +170,5 @@ def to_role(job: dict, company: dict) -> dict | None:
         "contact": CONTACTS.get(fn, "Hiring Manager"),
         "note": summary(desc) or job["department"],
         "tags": skills(f"{job['title']} {desc}"),
+        "frontline": bool(FRONTLINE.search(job["title"])),
     }

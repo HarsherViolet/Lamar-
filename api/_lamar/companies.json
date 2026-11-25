@@ -1,25 +1,187 @@
 {
   "_readme": "One entry per company. ats is greenhouse | lever | ashby | workable | smartrecruiters. token is the company's id on that system, taken from its job board URL. verified=true means the board was seen live on 23 Nov 2026; false entries are guesses the run reports on if they fail. Use `python -m lamar.discover <careers url>` to find the ats and token for a new company.",
   "companies": [
-    {"name": "Temus", "ats": "greenhouse", "token": "temus", "about": "Singapore digital transformation firm (Temasek-backed)", "verified": true},
-    {"name": "Aspire", "ats": "greenhouse", "token": "aspire", "about": "All-in-one finance platform for SEA businesses", "verified": true},
-    {"name": "Coda", "ats": "lever", "token": "Coda", "about": "Payments platform for digital content and games", "verified": true},
-    {"name": "Airwallex", "ats": "ashby", "token": "airwallex", "about": "Global payments and financial platform", "verified": true},
-    {"name": "ClickHouse", "ats": "ashby", "token": "clickhouse", "about": "Open-source analytics database company", "verified": true},
-    {"name": "Fuku (Hytech)", "ats": "workable", "token": "fuku", "about": "KL product and data company", "verified": true},
-    {"name": "Funding Societies | Modalku", "ats": "workable", "token": "fundingsocieties", "about": "Largest SME digital financing platform in Southeast Asia", "verified": true},
-    {"name": "Carousell Group", "ats": "smartrecruiters", "token": "CarousellGroup", "about": "SEA's leading secondhand marketplace group", "verified": true},
-    {"name": "Xendit", "ats": "lever", "token": "xendit", "about": "Payments infrastructure for Southeast Asia", "verified": false},
-    {"name": "Endowus", "ats": "lever", "token": "endowus", "about": "Singapore digital wealth platform", "verified": false},
-    {"name": "Nium", "ats": "lever", "token": "nium", "about": "Global real-time payments platform", "verified": false},
-    {"name": "Atome", "ats": "lever", "token": "advancegroup", "about": "Buy-now-pay-later app from Advance Intelligence Group", "verified": false},
-    {"name": "Thunes", "ats": "lever", "token": "thunes", "about": "Cross-border payments network", "verified": false},
-    {"name": "Grab", "ats": "smartrecruiters", "token": "Grab", "about": "SEA super-app for rides, food and payments", "verified": false},
-    {"name": "Ninja Van", "ats": "lever", "token": "ninjavan", "about": "SEA last-mile logistics", "verified": false},
-    {"name": "Carsome", "ats": "lever", "token": "carsome", "about": "Online used-car platform in SEA", "verified": false},
-    {"name": "Payfazz / Xfers (Fazz)", "ats": "lever", "token": "fazz", "about": "Business payments in SEA", "verified": false},
-    {"name": "HeyMax", "ats": "ashby", "token": "heymax", "about": "Singapore loyalty and rewards startup", "verified": false},
-    {"name": "Synagie", "ats": "workable", "token": "synagie", "about": "E-commerce enablement in SEA", "verified": false},
-    {"name": "Glints", "ats": "lever", "token": "glints", "about": "SEA talent platform", "verified": false}
+    {
+      "name": "Temus",
+      "ats": "greenhouse",
+      "token": "temus",
+      "about": "Singapore digital transformation firm (Temasek-backed)",
+      "verified": true
+    },
+    {
+      "name": "Aspire",
+      "ats": "greenhouse",
+      "token": "aspire",
+      "about": "All-in-one finance platform for SEA businesses",
+      "verified": true
+    },
+    {
+      "name": "Coda",
+      "ats": "lever",
+      "token": "Coda",
+      "about": "Payments platform for digital content and games",
+      "verified": true
+    },
+    {
+      "name": "Airwallex",
+      "ats": "ashby",
+      "token": "airwallex",
+      "about": "Global payments and financial platform",
+      "verified": true
+    },
+    {
+      "name": "ClickHouse",
+      "ats": "ashby",
+      "token": "clickhouse",
+      "about": "Open-source analytics database company",
+      "verified": true
+    },
+    {
+      "name": "Fuku (Hytech)",
+      "ats": "workable",
+      "token": "fuku",
+      "about": "KL product and data company",
+      "verified": true
+    },
+    {
+      "name": "Funding Societies | Modalku",
+      "ats": "workable",
+      "token": "fundingsocieties",
+      "about": "Largest SME digital financing platform in Southeast Asia",
+      "verified": true
+    },
+    {
+      "name": "Carousell Group",
+      "ats": "smartrecruiters",
+      "token": "CarousellGroup",
+      "about": "SEA's leading secondhand marketplace group",
+      "verified": true
+    },
+    {
+      "name": "Xendit",
+      "ats": "lever",
+      "token": "xendit",
+      "about": "Payments infrastructure for Southeast Asia",
+      "verified": false
+    },
+    {
+      "name": "Endowus",
+      "ats": "lever",
+      "token": "endowus",
+      "about": "Singapore digital wealth platform",
+      "verified": false
+    },
+    {
+      "name": "Nium",
+      "ats": "lever",
+      "token": "nium",
+      "about": "Global real-time payments platform",
+      "verified": false
+    },
+    {
+      "name": "Atome",
+      "ats": "lever",
+      "token": "advancegroup",
+      "about": "Buy-now-pay-later app from Advance Intelligence Group",
+      "verified": false
+    },
+    {
+      "name": "Thunes",
+      "ats": "lever",
+      "token": "thunes",
+      "about": "Cross-border payments network",
+      "verified": false
+    },
+    {
+      "name": "Grab",
+      "ats": "smartrecruiters",
+      "token": "Grab",
+      "about": "SEA super-app for rides, food and payments",
+      "verified": false
+    },
+    {
+      "name": "Ninja Van",
+      "ats": "lever",
+      "token": "ninjavan",
+      "about": "SEA last-mile logistics",
+      "verified": false
+    },
+    {
+      "name": "Carsome",
+      "ats": "lever",
+      "token": "carsome",
+      "about": "Online used-car platform in SEA",
+      "verified": false
+    },
+    {
+      "name": "Payfazz / Xfers (Fazz)",
+      "ats": "lever",
+      "token": "fazz",
+      "about": "Business payments in SEA",
+      "verified": false
+    },
+    {
+      "name": "HeyMax",
+      "ats": "ashby",
+      "token": "heymax",
+      "about": "Singapore loyalty and rewards startup",
+      "verified": false
+    },
+    {
+      "name": "Synagie",
+      "ats": "workable",
+      "token": "synagie",
+      "about": "E-commerce enablement in SEA",
+      "verified": false
+    },
+    {
+      "name": "Glints",
+      "ats": "lever",
+      "token": "glints",
+      "about": "SEA talent platform",
+      "verified": false
+    },
+    {
+      "name": "GESS (German European School Singapore)",
+      "ats": "lever",
+      "token": "gess",
+      "about": "International school in Singapore",
+      "verified": true
+    },
+    {
+      "name": "Guidepost Global Education",
+      "ats": "greenhouse",
+      "token": "gge-asia",
+      "about": "Montessori preschool network in Singapore",
+      "verified": true
+    },
+    {
+      "name": "Think Academy",
+      "ats": "greenhouse",
+      "token": "thinkacademyus",
+      "about": "Online maths education company with a teacher hub in Petaling Jaya",
+      "verified": true
+    },
+    {
+      "name": "Think Academy Singapore",
+      "ats": "greenhouse",
+      "token": "thinkacademysg",
+      "about": "Maths enrichment centres in Singapore",
+      "verified": true
+    },
+    {
+      "name": "Better Me (TAL Education)",
+      "ats": "greenhouse",
+      "token": "bettermesg",
+      "about": "Online enrichment education, part of TAL Education Group",
+      "verified": true
+    },
+    {
+      "name": "Boutique Education",
+      "ats": "workable",
+      "token": "boutique-education",
+      "about": "Tuition, homeschooling and education services in Singapore",
+      "verified": true
+    }
   ]
 }
