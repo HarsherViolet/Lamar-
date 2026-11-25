@@ -57,5 +57,6 @@ This works only on that computer, while Ollama is running, in Chrome or Edge. Sa
 
 - **Privacy:** on Gemini's free tier, Google may use what you send, including your CV text, to improve its products. Ollama keeps everything on your computer.
 - **Your data stays in the browser.** The brief, drafts and tracker are saved on each device separately. Use **Back up** and **Restore** in AI settings to move them between devices.
+- **Fields:** every role is labelled Data, Engineering, Product, Design, Education, Business, Sales, Marketing or Operations, and the app filters by field. Frontline roles (drivers, warehouse, retail) are collected but hidden unless you tick **Show frontline roles**.
 - **Roles** are read live from public job feeds, about four times a day at most because of the 6-hour cache. Edit `api/_lamar/companies.json` to watch more companies, then redeploy. Failed feeds are listed in `/api/roles` under `meta.failures`.
 - **Vercel's Hobby plan is for personal, non-commercial use.** If Lamar becomes a product, move to Pro.

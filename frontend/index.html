@@ -95,6 +95,11 @@ th{font-size:13px;color:var(--soft);font-weight:600}
 .win textarea{min-height:56px;font-size:14px;padding:6px 8px}
 .win button{border:0;background:none;cursor:pointer;font-size:18px;height:36px;color:var(--soft)}.star.on{color:var(--pink)}
 .xp{margin:0;padding-left:18px;font-size:14px}.xp li{margin:3px 0}
+.fields{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px;scrollbar-width:thin}
+.fields button{flex:none;font:500 14px Inter,sans-serif;min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;white-space:nowrap}
+.fields button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fields button span{opacity:.65;margin-left:4px;font-variant-numeric:tabular-nums}
+.fl{display:flex;align-items:center;gap:8px;font-weight:400;font-size:14px;margin:4px 0 14px;cursor:pointer}.fl input{accent-color:var(--pink);width:18px;height:18px}
 @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.brief{position:static;order:2}}
 @media(max-width:600px){table{font-size:13px}.stack2 thead{display:none}.stack2 tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack2 td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em}.stack2 td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--soft);font-size:12px}}
 @media(prefers-reduced-motion:reduce){.meter i{transition:none}}
@@ -104,7 +109,7 @@ th{font-size:13px;color:var(--soft);font-weight:600}
 <header class="band"><div class="wrap">
   <div>
     <h1>Lamar</h1>
-    <p>Startup roles in Kuala Lumpur and Singapore, read live from company job boards and matched to your CV, with a short note drafted to the person who hires.</p>
+    <p>Jobs at startups, tech companies and schools in Kuala Lumpur and Singapore, read live from their job boards and matched to your CV, with a short note drafted to the person who hires.</p>
   </div>
   <nav role="tablist">
     <button role="tab" id="t-roles" aria-selected="true" data-tab="roles">Roles</button>
@@ -162,6 +167,8 @@ th{font-size:13px;color:var(--soft);font-weight:600}
           <button class="btn hot" id="rankBtn">Rank with AI</button>
         </div>
       </div>
+      <div class="fields" id="fieldChips" role="toolbar" aria-label="Filter roles by field"></div>
+      <label class="fl"><input type="checkbox" id="showFront"> Show frontline roles <span class="hint">(drivers, warehouse, retail)</span></label>
       <div class="notice" id="aiNote" hidden></div>
       <div class="stack" id="list"></div>
       <p class="hint" style="margin-top:14px" id="freshNote">Roles are read from company job boards a few times a day. Open the posting before you send anything.</p>
@@ -199,7 +206,7 @@ const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LEVELS=['Intern','Entry','Mid','Senior','Lead'];
 const STATUSES=['','Saved','Emailed','Replied','Interview','Offer','Closed'];
-const defaults={profile:{name:'',cv:'',target:'data analyst, data scientist, analytics engineer, product analyst',where:['MY','SG'],level:'Entry',tone:'Warm',sources:{},facts:null},track:{},ai:{},drafts:{},custom:[]};
+const defaults={profile:{name:'',cv:'',target:'data analyst, data scientist, analytics engineer, product analyst',where:['MY','SG'],level:'Entry',tone:'Warm',sources:{},facts:null},track:{},ai:{},drafts:{},custom:[],field:'All',showFrontline:false};
 let S=JSON.parse(JSON.stringify(defaults));
 let ROLES=[],openId=null,sample=null,store=null,saveTimer=null,saving=false,dirty=false;
 
@@ -229,18 +236,27 @@ let s=30;if(targets.some(t=>title.includes(t)))s+=35;else if(targets.some(t=>t.s
 const {sk,cv}=bgWords();if(cv.size||sk.size){const hit=(r.tags||[]).filter(t=>sk.has(t)||t.split(' ').every(w=>cv.has(w))).length;s+=Math.min(24,hit*8)}
 const gap=LEVELS.indexOf(r.level)-LEVELS.indexOf(p.level);s-=gap>0?gap*12:Math.abs(gap)*6;
 return Math.max(5,Math.min(98,Math.round(s)))}
-function visible(r){const w=S.profile.where;if(!w.length)return true;return w.includes(r.country)||(w.includes('Remote')&&r.mode==='Remote')}
+const FIELD_ORDER=['Data','Engineering','Product','Design','Education','Business','Sales','Marketing','Operations','Other'];
+const fnOf=r=>r.fn||'Other';
+function placeOk(r){const w=S.profile.where;if(!w.length)return true;return w.includes(r.country)||(w.includes('Remote')&&r.mode==='Remote')}
+const baseOk=r=>placeOk(r)&&(S.showFrontline||!r.frontline);
+function visible(r){return baseOk(r)&&(!S.field||S.field==='All'||fnOf(r)===S.field)}
+function renderFields(){const base=allRoles().filter(baseOk),n={};base.forEach(r=>{const f=fnOf(r);n[f]=(n[f]||0)+1});
+  if(S.field&&S.field!=='All'&&!n[S.field])n[S.field]=0;
+  const fs=FIELD_ORDER.filter(f=>f in n);
+  $('#fieldChips').innerHTML=[['All',base.length],...fs.map(f=>[f,n[f]])].map(([f,c])=>`<button type="button" data-f="${esc(f)}" aria-pressed="${(S.field||'All')===f}">${esc(f)}<span>${c}</span></button>`).join('');
+  $('#showFront').checked=!!S.showFrontline}
 const fitOf=r=>S.ai[r.id]?S.ai[r.id].score:localFit(r);
 
 /* ---------- render roles ---------- */
 function render(){
-  const list=allRoles().filter(visible);const by=$('#sort').value;
+  renderFields();const list=allRoles().filter(visible);const by=$('#sort').value;const fld=S.field&&S.field!=='All'?S.field+' ':'';
   list.sort(by==='new'?(a,b)=>(b.posted||'0').localeCompare(a.posted||'0'):(a,b)=>fitOf(b)-fitOf(a));
   const ai=Object.keys(S.ai).length;
   const fresh=list.filter(isNew).length;
-  $('#summary').textContent=`${list.length} roles in ${S.profile.where.filter(w=>w!=='Remote').join(' and ')||'all locations'}${fresh?` · ${fresh} new`:''} · ${ai?'ranked by AI':'quick keyword fit'}`;
+  $('#summary').textContent=`${list.length} ${fld.toLowerCase()}${list.length===1?"role":"roles"} in ${S.profile.where.filter(w=>w!=='Remote').join(' and ')||'all locations'}${fresh?` · ${fresh} new`:''} · ${ai?'ranked by AI':'quick keyword fit'}`;
   if(META&&META.updated_at)$('#freshNote').textContent=`Roles collected from company job boards, last updated ${new Date(META.updated_at).toLocaleString([], {day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}. Open the posting before you send anything, in case it has closed.`;
-  $('#list').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No roles match these locations. Tick another box in your brief.</p>';
+  $('#list').innerHTML=list.length?list.map(card).join(''):(fld?`<p class="empty">No ${esc(fld.trim().toLowerCase())} roles here right now. <button class="lnk" data-f="All">Show all fields</button></p>`:'<p class="empty">No roles match these locations. Tick another box in your brief.</p>');
   const n=Object.values(S.track).filter(t=>t.s).length;$('#trackCount').textContent=n?`(${n})`:'';
   renderTrack()}
 function card(r){const f=fitOf(r),a=S.ai[r.id],t=S.track[r.id]||{},d=daysAgo(r.posted),open=openId===r.id;
@@ -452,6 +468,9 @@ $('#profileBox').addEventListener('keydown',e=>{if(e.target.id!=='addSkill'||e.k
   if(v&&f&&!f.skills.includes(v)){f.skills.push(v);BGW=null;save();renderProfile();render();$('#addSkill').focus()}});
 
 $('#sort').addEventListener('change',render);
+$('#fieldChips').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;S.field=b.dataset.f;save();render()});
+$('#list').addEventListener('click',e=>{const b=e.target.closest('.empty [data-f]');if(b){S.field='All';save();render()}});
+$('#showFront').addEventListener('change',e=>{S.showFrontline=e.target.checked;save();render()});
 $('#rankBtn').addEventListener('click',rank);
 $('#addBtn').addEventListener('click',addRole);
 $('#list').addEventListener('click',async e=>{const el=e.target.closest('[data-act]');if(!el||el.tagName==='SELECT'||el.tagName==='INPUT'||el.tagName==='TEXTAREA')return;
