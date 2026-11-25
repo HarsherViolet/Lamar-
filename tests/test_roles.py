@@ -76,5 +76,36 @@ class FunctionLabels(unittest.TestCase):
             self.assertEqual(function(title, dept), want, title)
 
 
+
+class Fields(unittest.TestCase):
+    def test_education_roles(self):
+        from _lamar.enrich import function
+        for title in ["High School English Language and Literature Teacher", "Part-time Math Tutor",
+                      "Montessori Teacher (English)", "Relief Preschool Teacher", "Lecturer, Computer Science",
+                      "Team Lead of Curriculum Development and Teaching Management", "Data Science Instructor"]:
+            self.assertEqual(function(title, ""), "Education", title)
+        self.assertEqual(function("Principal Infrastructure Engineer, Cloud", ""), "Engineering")
+
+    def test_singapore_typo_and_frontline_flag(self):
+        from _lamar.enrich import to_role
+        from _lamar.sources import raw
+        co = {"name": "X", "ats": "lever", "about": ""}
+        r = to_role(raw(title="Assistant Teacher", locations=["Singpaore"], url="u"), co)
+        self.assertEqual((r["country"], r["fn"], r["frontline"]), ("SG", "Education", False))
+        d = to_role(raw(title="Delivery Driver", locations=["Kuala Lumpur"], url="u"), co)
+        self.assertTrue(d["frontline"])  # kept, but flagged
+
+    def test_frontline_has_its_own_cap(self):
+        from _lamar import pipeline
+        from _lamar.sources import raw
+        jobs = [raw(source_id=f"d{i}", title=f"Delivery Driver {i}", locations=["Kuala Lumpur"], url=f"u{i}",
+                    posted="2026-11-20") for i in range(30)]
+        jobs += [raw(source_id="a", title="Data Analyst", locations=["Kuala Lumpur"], url="ua", posted="2026-11-01")]
+        with mock.patch.dict(sources.FETCHERS, {"lever": lambda t: jobs}):
+            roles_, _ = pipeline.build([{"name": "Ninja", "ats": "lever", "token": "n"}], [])
+        self.assertEqual(sum(r["frontline"] for r in roles_), pipeline.MAX_FRONTLINE_PER_COMPANY)
+        self.assertIn("Data Analyst", [r["title"] for r in roles_])  # office role not crowded out
+
+
 if __name__ == "__main__":
     unittest.main()

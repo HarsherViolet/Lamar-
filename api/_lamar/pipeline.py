@@ -17,6 +17,7 @@ from .enrich import to_role
 
 ROOT = Path(__file__).resolve().parent.parent
 MAX_PER_COMPANY = 60  # keeps one big employer from flooding the list
+MAX_FRONTLINE_PER_COMPANY = 20  # frontline roles get their own, smaller allowance
 
 
 def load_companies(path: Path) -> list[dict]:
@@ -59,7 +60,9 @@ def build(companies: list[dict], previous: list[dict], fixtures: Path | None = N
         uniq = {}
         for r in kept:
             uniq.setdefault((r["title"].lower(), r["city"]), r)
-        kept = sorted(uniq.values(), key=lambda r: r["posted"] or "0", reverse=True)[:MAX_PER_COMPANY]
+        newest = sorted(uniq.values(), key=lambda r: r["posted"] or "0", reverse=True)
+        kept = [r for r in newest if not r["frontline"]][:MAX_PER_COMPANY] + \
+            [r for r in newest if r["frontline"]][:MAX_FRONTLINE_PER_COMPANY]
         per_company[company["name"]] = {"total": len(jobs), "kept": len(kept)}
         roles += kept
 

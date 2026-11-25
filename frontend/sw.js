@@ -1,5 +1,5 @@
 // Lamar service worker: opens offline, keeps the last role list, never caches AI calls.
-const VERSION = 'lamar-v2';
+const VERSION = 'lamar-v3';
 const SHELL = ['/', '/index.html', '/ai-shim.js', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', e => {
